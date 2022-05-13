@@ -27,53 +27,61 @@ function App() {
   const [openCards, setOpenCards] = useState([]);
   const [audio, setAudio] = useState(new Audio("images/sound2.mp3"));
   const [shot, setShot] = useState(0);
-  const [points, setPoints] = useState(30);
-  const reset = () => {
-    randomDeal();
-    /*  let arr = [...table];
-    arr.map((item) => (item.flag = false)); */
-    //setTable(arr);
-    setOpenCards([]);
-    setPoints(30);
-    setShot(0);
-    setAudio(new Audio("images/sound2.mp3"));
-  };
+  const [points, setPoints] = useState(40);
 
-  //recursive function for random dealing
   const randomDeal = () => {
     if (cards.length < 1) {
       setTable(dealedCards);
-      console.log("test");
       return table;
     } else {
       let random = Math.floor(Math.random() * cards.length);
       let randomCard = cards.splice(random, 1);
       dealedCards.push(...randomCard);
-
       return randomDeal();
     }
   };
+
+  const showFinalResult = () => {
+    dealedCards.map((item) => (item.flag = false));
+    cards = [...dealedCards];
+    dealedCards = [];
+    setTable([]);
+    setOpenCards([]);
+    setAudio(new Audio("images/sound2.mp3"));
+    setPoints(40);
+    setShot(0);
+    alert(`Osvojili ste ${points} poena.`);
+  };
+
   const changeFlag = (item) => {
     let newTable = table.map((card) => {
       if (card.name === item.name && card.flag === false) {
         card.flag = true;
         setOpenCards([...openCards, card]);
+        setPoints(points - 1);
         return card;
       } else {
         return card;
       }
     });
-    setPoints(points - 1);
+
     setTable(newTable);
-    if (points === 1 || table.every((item) => item.flag === true)) {
+    if (table.every((item) => item.flag === true)) {
+      setAudio(new Audio("images/sound1.mp3"));
+      setTimeout(showFinalResult, 500);
+    }
+    if (points === 1) {
       setAudio(new Audio("images/sound1.mp3"));
     }
-    if (points === 0) {
-      audio.play();
-      alert("kraj");
-      reset();
-    }
   };
+
+  useEffect(() => {
+    if (points === 0) {
+      dealedCards.map((item) => (item.flag = false));
+      audio.play();
+      setTimeout(showFinalResult, 500);
+    }
+  }, [points]);
 
   const checkLastTwo = () => {
     let arr = [...openCards];
@@ -90,22 +98,16 @@ function App() {
           if (item.name === name1) {
             item.flag = false;
             return item;
-          } else {
-            return item;
           }
         });
         newTable.map((item) => {
           if (item.name === name2) {
             item.flag = false;
             return item;
-          } else {
-            return item;
           }
         });
-      } else {
       }
       arr = arr.slice(2);
-
       setTable(newTable);
       setOpenCards(arr);
     }
@@ -118,14 +120,13 @@ function App() {
   }, [openCards, audio]);
 
   return (
-    <div>
-      <h2 onClick={reset} className="title">
-        Memory game
-      </h2>
-      <h2>shots {shot}</h2>
-      <h2>points {points}</h2>
-
-      <button className="btn-start" onClick={randomDeal}>
+    <div className="container">
+      <h2 className="title">Memory game</h2>
+      <div className="results">
+        <h2>Shots: {shot}</h2>
+        <h2>Points: {points}</h2>
+      </div>
+      <button className="btn-start" type="button" onClick={randomDeal}>
         START
       </button>
       <div className="App">
