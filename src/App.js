@@ -63,7 +63,7 @@ function App() {
   const checkIsFinish = () => {
     if (points === 0) {
       sound2.play();
-      setTimeout(showFinalResult, 500);
+      setTimeout(showFinalResult, 100);
     }
     if (table.length > 0 && table.every((item) => item.isOpen === true)) {
       sound1.play();
