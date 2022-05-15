@@ -63,7 +63,7 @@ function App() {
   const checkIsFinish = () => {
     if (points === 0) {
       sound2.play();
-      setTimeout(showFinalResult, 500);
+      setTimeout(showFinalResult, 100);
     }
     if (table.length > 0 && table.every((item) => item.isOpen === true)) {
       sound1.play();
@@ -148,7 +148,7 @@ function App() {
         <div className="gray-wall">
           <div className="result">
             <p>{message}</p>
-            <p>Do you want more?</p>
+            <p>Do you want new game?</p>
             <button onClick={reset}>Yes, please!</button>
             <button onClick={() => setIsOpen(false)}>No, thank`s</button>
           </div>
