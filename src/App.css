@@ -1,15 +1,21 @@
 body {
-  background-color: rgb(33, 211, 211);
+  background-color: black;
+}
+.container {
+  background-color: rgb(9, 244, 228);
+  min-height: 100vh;
+  padding-bottom: 5%;
 }
 .results {
   display: flex;
   justify-content: space-around;
+  border-bottom: 2px solid black;
 }
 .App {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
-  max-width: 50%;
+  max-width: 60%;
   margin: auto;
 }
 .one-card {
@@ -23,21 +29,30 @@ body {
 }
 .results h2 {
   font-size: 3vw;
+  font-weight: 600;
 }
-.title {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  font-size: 4vw;
-}
+
 .btn-start {
   margin: 3% auto;
   display: block;
   padding: 1% 5%;
-  background-color: rgb(9, 111, 220);
+  background-color: rgb(9, 220, 199);
   animation-name: left-comming;
   animation-duration: 1s;
   position: relative;
+  border-radius: 5%;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  font-size: vw;
+}
+.btn-start:hover {
+  background-color: rgb(62, 225, 157);
+  transform: scale(1.1);
+}
+span {
+  color: rgb(6, 147, 240);
+  font-size: 4vw;
 }
 @keyframes left-comming {
   0% {
@@ -48,9 +63,6 @@ body {
   }
 }
 @media screen and (max-width: 600px) {
-  .App {
-    max-width: 100%;
-  }
   .results h2 {
     font-size: 4vw;
     margin-top: 5%;
@@ -61,5 +73,16 @@ body {
   }
   .btn-start {
     margin: 10% auto;
+    padding: 2% 10%;
+    font-size: 4vw;
+  }
+  .container {
+    width: 100%;
+  }
+  .App {
+    max-width: 90%;
+  }
+  span {
+    font-size: 6vw;
   }
 }

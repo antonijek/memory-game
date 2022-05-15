@@ -5,9 +5,9 @@ const oneCard = (props) => {
     <div className="one-card">
       <img
         className="image"
-        src={props.card.flag ? props.card.url : "images/card-back.jpg"}
+        src={props.card.isOpen ? props.card.url : "images/card-back.jpg"}
         alt="card"
-        onClick={(e) => props.handleCard(props.card)}
+        onClick={(e) => props.handleOpenStatus(props.card)}
       />
     </div>
   );

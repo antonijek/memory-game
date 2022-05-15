@@ -4,135 +4,139 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 let cards = [
-  { name: "grapes", url: "images/grapes.jpg", flag: false },
-  { name: "apple", url: "images/apple.jpg", flag: false },
-  { name: "orange", url: "images/orange.jpg", flag: false },
-  { name: "kivi", url: "images/kivi.jpg", flag: false },
-  { name: "peach", url: "images/peach.jpg", flag: false },
-  { name: "watermelon", url: "images/watermelon.jpg", flag: false },
-  { name: "lemon", url: "images/lemon.jpg", flag: false },
-  { name: "strawberry", url: "images/strawberry.jpg", flag: false },
-  { name: "grapes1", url: "images/grapes.jpg", flag: false },
-  { name: "apple1", url: "images/apple.jpg", flag: false },
-  { name: "orange1", url: "images/orange.jpg", flag: false },
-  { name: "kivi1", url: "images/kivi.jpg", flag: false },
-  { name: "peach1", url: "images/peach.jpg", flag: false },
-  { name: "watermelon1", url: "images/watermelon.jpg", flag: false },
-  { name: "lemon1", url: "images/lemon.jpg", flag: false },
-  { name: "strawberry1", url: "images/strawberry.jpg", flag: false },
+  { name: "grapes", url: "images/grapes.jpg", isOpen: false },
+  { name: "apple", url: "images/apple.jpg", isOpen: false },
+  { name: "orange", url: "images/orange.jpg", isOpen: false },
+  { name: "kivi", url: "images/kivi.jpg", isOpen: false },
+  { name: "lemon", url: "images/lemon.jpg", isOpen: false },
+  { name: "strawberry", url: "images/strawberry.jpg", isOpen: false },
+  { name: "grapes1", url: "images/grapes.jpg", isOpen: false },
+  { name: "apple1", url: "images/apple.jpg", isOpen: false },
+  { name: "orange1", url: "images/orange.jpg", isOpen: false },
+  { name: "kivi1", url: "images/kivi.jpg", isOpen: false },
+  { name: "lemon1", url: "images/lemon.jpg", isOpen: false },
+  { name: "strawberry1", url: "images/strawberry.jpg", isOpen: false },
 ];
 let dealedCards = [];
 function App() {
   const [table, setTable] = useState([]);
-  const [openCards, setOpenCards] = useState([]);
-  const [audio, setAudio] = useState(new Audio("images/sound2.mp3"));
+  const [cardPairs, setCardPairs] = useState([]);
   const [shot, setShot] = useState(0);
-  const [points, setPoints] = useState(40);
+  const [points, setPoints] = useState(10);
 
-  const randomDeal = () => {
-    if (cards.length < 1) {
-      setTable(dealedCards);
+  let sound1 = new Audio("../audios/sound1.mp3");
+  let sound2 = new Audio("../audios/sound2.mp3");
+  let sound3 = new Audio("../audios/sound3.wav");
+  let sound4 = new Audio("../audios/sound4.wav");
+
+  const randomDeal = (arr1, arr2) => {
+    if (arr1.length < 1) {
+      setTable(arr2);
       return table;
     } else {
-      let random = Math.floor(Math.random() * cards.length);
-      let randomCard = cards.splice(random, 1);
-      dealedCards.push(...randomCard);
-      return randomDeal();
+      let random = Math.floor(Math.random() * arr1.length);
+      let randomCard = arr1.splice(random, 1);
+      arr2.push(...randomCard);
+      return randomDeal(arr1, arr2);
     }
   };
 
   const showFinalResult = () => {
-    dealedCards.map((item) => (item.flag = false));
+    dealedCards.map((item) => (item.isOpen = false));
     cards = [...dealedCards];
     dealedCards = [];
-    setTable([]);
-    setOpenCards([]);
-    setAudio(new Audio("images/sound2.mp3"));
-    setPoints(40);
-    setShot(0);
     alert(`Osvojili ste ${points} poena.`);
+    setTable([]);
+    setCardPairs([]);
+    setPoints(10);
+    setShot(0);
   };
 
-  const changeFlag = (item) => {
+  const handleOpenStatus = (item) => {
     let newTable = table.map((card) => {
-      if (card.name === item.name && card.flag === false) {
-        card.flag = true;
-        setOpenCards([...openCards, card]);
+      if (card.name === item.name && card.isOpen === false) {
+        card.isOpen = true;
+        setCardPairs([...cardPairs, card]);
         setPoints(points - 1);
         return card;
       } else {
         return card;
       }
     });
-
     setTable(newTable);
-    if (table.every((item) => item.flag === true)) {
-      setAudio(new Audio("images/sound1.mp3"));
+  };
+
+  const checkIsFinish = () => {
+    if (points === 0) {
+      sound3.play();
       setTimeout(showFinalResult, 500);
     }
-    if (points === 1) {
-      setAudio(new Audio("images/sound1.mp3"));
+    if (table.length > 0 && table.every((item) => item.isOpen === true)) {
+      sound1.play();
+      setTimeout(showFinalResult, 500);
     }
   };
 
   useEffect(() => {
-    if (points === 0) {
-      dealedCards.map((item) => (item.flag = false));
-      audio.play();
-      setTimeout(showFinalResult, 500);
-    }
+    checkIsFinish();
   }, [points]);
 
-  const checkLastTwo = () => {
-    let arr = [...openCards];
+  useEffect(() => {
+    checkLastTwo();
+  }, [cardPairs]);
+
+  const backToFalse = (name) => {
     let newTable = [...table];
+    newTable.map((item) => {
+      if (item.name === name) {
+        item.isOpen = false;
+        return item;
+      }
+    });
+    setTable(newTable);
+  };
+
+  const checkLastTwo = () => {
+    let arr = [...cardPairs];
     if (arr.length === 2 && arr[0].url === arr[1].url) {
-      audio.play();
+      sound4.play();
       setShot(shot + 1);
+      setPoints(points + 2);
     }
     if (arr.length > 2) {
       if (arr[arr.length - 3].url !== arr[arr.length - 2].url) {
         let name1 = arr[arr.length - 3].name;
         let name2 = arr[arr.length - 2].name;
-        newTable.map((item) => {
-          if (item.name === name1) {
-            item.flag = false;
-            return item;
-          }
-        });
-        newTable.map((item) => {
-          if (item.name === name2) {
-            item.flag = false;
-            return item;
-          }
-        });
+        backToFalse(name1);
+        backToFalse(name2);
       }
       arr = arr.slice(2);
-      setTable(newTable);
-      setOpenCards(arr);
+      setCardPairs(arr);
     }
   };
-  const handleCard = (name) => {
-    changeFlag(name);
-  };
-  useEffect(() => {
-    checkLastTwo();
-  }, [openCards, audio]);
 
   return (
     <div className="container">
-      <h2 className="title">Memory game</h2>
       <div className="results">
-        <h2>Shots: {shot}</h2>
-        <h2>Points: {points}</h2>
+        <h2>
+          Score:<span> {shot}</span>
+        </h2>
+        <h2 className="title">MEMORY GAME</h2>
+        <h2>
+          Attempts:<span> {Math.ceil(points / 2)}</span>
+        </h2>
       </div>
-      <button className="btn-start" type="button" onClick={randomDeal}>
+      <button
+        className="btn-start"
+        type="button"
+        onClick={() => randomDeal(cards, dealedCards)}
+      >
         START
       </button>
       <div className="App">
         {table.map((card, i) => (
           <div key={i}>
-            <OneCard card={card} handleCard={handleCard} />
+            <OneCard card={card} handleOpenStatus={handleOpenStatus} />
           </div>
         ))}
       </div>
