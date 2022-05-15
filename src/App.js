@@ -23,11 +23,12 @@ function App() {
   const [cardPairs, setCardPairs] = useState([]);
   const [shot, setShot] = useState(0);
   const [points, setPoints] = useState(10);
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("You lost!");
 
   let sound1 = new Audio("../audios/sound1.mp3");
-  let sound2 = new Audio("../audios/sound2.mp3");
+  let sound2 = new Audio("../audios/sound2.wav");
   let sound3 = new Audio("../audios/sound3.wav");
-  let sound4 = new Audio("../audios/sound4.wav");
 
   const randomDeal = (arr1, arr2) => {
     if (arr1.length < 1) {
@@ -42,14 +43,8 @@ function App() {
   };
 
   const showFinalResult = () => {
-    dealedCards.map((item) => (item.isOpen = false));
-    cards = [...dealedCards];
-    dealedCards = [];
-    alert(`Osvojili ste ${points} poena.`);
     setTable([]);
-    setCardPairs([]);
-    setPoints(10);
-    setShot(0);
+    setIsOpen(true);
   };
 
   const handleOpenStatus = (item) => {
@@ -57,7 +52,6 @@ function App() {
       if (card.name === item.name && card.isOpen === false) {
         card.isOpen = true;
         setCardPairs([...cardPairs, card]);
-        setPoints(points - 1);
         return card;
       } else {
         return card;
@@ -68,18 +62,21 @@ function App() {
 
   const checkIsFinish = () => {
     if (points === 0) {
-      sound3.play();
+      sound2.play();
       setTimeout(showFinalResult, 500);
     }
     if (table.length > 0 && table.every((item) => item.isOpen === true)) {
       sound1.play();
       setTimeout(showFinalResult, 500);
+      setMessage("You won!");
     }
   };
-
+  useEffect(() => {
+    randomDeal(cards, dealedCards);
+  }, []);
   useEffect(() => {
     checkIsFinish();
-  }, [points]);
+  }, [points, cardPairs]);
 
   useEffect(() => {
     checkLastTwo();
@@ -99,9 +96,11 @@ function App() {
   const checkLastTwo = () => {
     let arr = [...cardPairs];
     if (arr.length === 2 && arr[0].url === arr[1].url) {
-      sound4.play();
+      sound3.play();
       setShot(shot + 1);
-      setPoints(points + 2);
+    }
+    if (arr.length === 2 && arr[0].url !== arr[1].url) {
+      setPoints(points - 2);
     }
     if (arr.length > 2) {
       if (arr[arr.length - 3].url !== arr[arr.length - 2].url) {
@@ -114,7 +113,18 @@ function App() {
       setCardPairs(arr);
     }
   };
-
+  const reset = () => {
+    dealedCards.map((item) => (item.isOpen = false));
+    cards = [...dealedCards];
+    dealedCards = [];
+    setTable([]);
+    setCardPairs([]);
+    setPoints(10);
+    setShot(0);
+    setIsOpen(false);
+    setMessage("You lost!");
+    randomDeal(cards, dealedCards);
+  };
   return (
     <div className="container">
       <div className="results">
@@ -126,13 +136,7 @@ function App() {
           Attempts:<span> {Math.ceil(points / 2)}</span>
         </h2>
       </div>
-      <button
-        className="btn-start"
-        type="button"
-        onClick={() => randomDeal(cards, dealedCards)}
-      >
-        START
-      </button>
+
       <div className="App">
         {table.map((card, i) => (
           <div key={i}>
@@ -140,6 +144,16 @@ function App() {
           </div>
         ))}
       </div>
+      {isOpen === true ? (
+        <div className="gray-wall">
+          <div className="result">
+            <p>{message}</p>
+            <p>Do you want more?</p>
+            <button onClick={reset}>Yes, please!</button>
+            <button onClick={() => setIsOpen(false)}>No, thank`s</button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

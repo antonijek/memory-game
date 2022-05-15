@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  position: relative;
 }
 .container {
   background-color: rgb(9, 244, 228);
@@ -16,7 +17,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
   max-width: 60%;
-  margin: auto;
+  margin: 5% auto;
 }
 .one-card {
   width: 100%;
@@ -54,6 +55,33 @@ span {
   color: rgb(6, 147, 240);
   font-size: 4vw;
 }
+
+.gray-wall {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(192, 192, 192, 0.3);
+}
+.result {
+  padding: 2%;
+  text-align: center;
+  width: 50%;
+  background-color: black;
+  color: white;
+  margin: 20% auto;
+}
+.result button {
+  font-size: 2vw;
+  cursor: pointer;
+  padding: 1%;
+}
+.result p {
+  font-size: 2vw;
+}
+
 @keyframes left-comming {
   0% {
     left: -100%;
@@ -84,5 +112,16 @@ span {
   }
   span {
     font-size: 6vw;
+  }
+  .result {
+    margin: 30% auto;
+    width: 80%;
+    height: 40vw;
+  }
+  .result button {
+    font-size: 4vw;
+  }
+  .result p {
+    font-size: 4vw;
   }
 }
