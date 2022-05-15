@@ -148,7 +148,7 @@ function App() {
         <div className="gray-wall">
           <div className="result">
             <p>{message}</p>
-            <p>Do you want more?</p>
+            <p>Do you want new game?</p>
             <button onClick={reset}>Yes, please!</button>
             <button onClick={() => setIsOpen(false)}>No, thank`s</button>
           </div>
